@@ -28,3 +28,25 @@ def text_reader(file_name: str) -> list[list[str | int]]:
             goals.append(values)
 
         return goals
+
+
+def find_by_id(
+    id: int, students: list[dict[str, str | int | float]]
+) -> dict[str, str | int | float] | None:
+    for student in students:
+        if student["ID"] == id:
+            return student
+    return None
+
+
+def find_by_surname(
+    surname: str, students: list[dict[str, str | int | float]]
+) -> dict[str, str | int | float] | None:
+    for student in students:
+        if student["cognome"] == surname:
+            return student
+    return None
+
+
+def print_student_record(student: dict[str, str | int | float]) -> str:
+    return f"{student['ID']} {student['cognome']} {student['nome']} {student['classe']} {student['media']}\n"
