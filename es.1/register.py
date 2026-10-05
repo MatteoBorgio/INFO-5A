@@ -30,21 +30,15 @@ def text_reader(file_name: str) -> list[list[str | int]]:
         return goals
 
 
-def find_by_id(
-    id: int, students: list[dict[str, str | int | float]]
+def find_by_term(
+    key: str, term: str | int | float, students: list[dict[str, str | int | float]]
 ) -> dict[str, str | int | float] | None:
-    for student in students:
-        if student["ID"] == id:
-            return student
-    return None
-
-
-def find_by_surname(
-    surname: str, students: list[dict[str, str | int | float]]
-) -> dict[str, str | int | float] | None:
-    for student in students:
-        if student["cognome"] == surname:
-            return student
+    try:
+        for student in students:
+            if student[key] == term:
+                return student
+    except KeyError:
+        print("Key is not valid.\n")
     return None
 
 
