@@ -42,35 +42,25 @@ def find_by_term(
     return None
 
 
-def verify_id(identifier, students: list[dict]) -> bool:
-    for student in students:
-        if student["ID"] == identifier:
-            return True
-    return False
-
-
 def students_in_class(
-    c: str, students: list[dict[str, str | int | float]]
+    class_name: str, students: list[dict[str, str | int | float]]
 ) -> list[dict[str, str | int | float]] | None:
     class_students = []
     for student in students:
-        if student["classe"] == c:
+        if student["classe"] == class_name:
             class_students.append(student)
 
     return class_students if len(class_students) > 0 else None
 
 
-def find_average(students: list[dict[str, int]]) -> float:
-    student_averages_sum = 0
-    counter = 0
-    for student in students:
-        student_averages_sum += student["media"]
-        counter += 1
-    try:
-        average = student_averages_sum / counter
-        return average
-    except ZeroDivisionError:
+def find_average(students) -> float:
+    if len(students) == 0:
         return 0
+    student_averages_sum = 0
+    for student in students:
+        student_averages_sum += float(student["media"])
+    average = student_averages_sum / len(students)
+    return average
 
 
 def print_student_record(student: dict[str, str | int | float] | None) -> None:
@@ -86,21 +76,36 @@ def main() -> None:
 
     print("--- Ricerca per ID ---\n")
     for identifier in requests[0]:
-        if verify_id(identifier, students):
-            print_student_record(find_by_term("ID", identifier, students))
+        student = find_by_term("ID", identifier, students)
+
+        if student is not None:
+            print_student_record(student)
         else:
             print(f"ID {identifier} non trovato\n")
 
     print("--- Ricerca per cognome ---\n")
     for surname in requests[1]:
-        print_student_record(find_by_term("ID", surname, students))
+        student = find_by_term("cognome", surname, students)
+
+        if student is not None:
+            print_student_record(student)
+        else:
+            print(f"Cognome {surname} non trovato\n")
 
     print(f"--- Media della classe {requests[2][0]} ---\n")
-    if students_in_class(requests[2][0], students) is None:
-        print(f"Nessun studente nella classe {requests[2][0]}\n")
-    else:
-        class_students = students_in_class(str(requests[2][0]), students)
-        students_length = len(class_students)
-        print(f"Studenti considerati: {students_length}\n")
 
-    print("")
+    class_name = str(requests[2][0])
+    class_students = students_in_class(class_name, students)
+
+    if class_students is None:
+        print(f"Nessun studente nella classe {class_name}\n")
+    else:
+        students_length = len(class_students)
+        average = find_average(class_students)
+
+        print(f"Studenti considerati: {students_length}")
+        print(f"Media della classe: {average:.2f}\n")
+
+
+if __name__ == "__main__":
+    main()
